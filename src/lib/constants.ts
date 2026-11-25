@@ -26,7 +26,6 @@ export const LOCATIONS = [
   "Bldg. 21 — Guard House",
   "Bldg. 23 — Learning Resource Center",
   "Bldg. 24 — Girl’s Trade Building",
-  "Bldg. 25 — Food Innovation Center",
   "Bldg. 26 — Food Innovation Center",
   "Bldg. 27 — University Health Center Building / Office of Student Affairs (OSA)",
   "Bldg. 28 — Old Science Building",
