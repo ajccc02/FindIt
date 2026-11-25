@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { CATEGORIES } from "./constants";
+import { CATEGORIES, LOCATIONS } from "./constants";
 import { today } from "./format";
 const optionalText = (max: number) =>
   z
@@ -34,7 +34,9 @@ export const reportSchema = z
       .min(10, "Describe the item in at least 10 characters.")
       .max(2000),
     color: optionalText(50),
-    location: z.string().trim().min(2, "Enter a campus location.").max(100),
+    location: z.enum(LOCATIONS, {
+      error: "Choose a building from the campus list.",
+    }),
     incident_date: z
       .string()
       .refine(validDate, "Choose a valid date on or before today."),
@@ -47,38 +49,11 @@ export const reportSchema = z
     message: "Only found items can be marked as turned over.",
     path: ["turned_over"],
   });
-const rating = z.number().int().min(1, "Choose a rating.").max(5);
-export const feedbackSchema = z
-  .object({
-    id: z.uuid(),
-    participant_code: z
-      .string()
-      .trim()
-      .regex(
-        /^[A-Za-z0-9_-]{2,32}$/,
-        "Use a 2–32 character participant code with letters, numbers, - or _.",
-      ),
-    testing_stage: z.enum(["Initial", "Showcase"]),
-    consent_given: z.literal(true, {
-      error: "Your consent is required to submit feedback.",
-    }),
-    ease_of_use: rating,
-    navigation: rating,
-    clarity: rating,
-    system_feedback: rating,
-    accessibility: rating,
-    task_completion: rating,
-    overall_satisfaction: rating,
-    liked: z.string().trim().max(1000),
-    difficulties: z.string().trim().max(1000),
-    improvements: z.string().trim().max(1000),
-  })
-  .strict();
 export const filterSchema = z.object({
   q: z.string().trim().max(100).default(""),
   type: z.enum(["all", "lost", "found"]).default("all"),
   category: z.union([z.literal(""), z.enum(CATEGORIES)]).default(""),
-  location: z.string().max(100).default(""),
+  location: z.union([z.literal(""), z.enum(LOCATIONS)]).default(""),
   status: z.enum(["all", "active", "resolved"]).default("active"),
   sort: z.enum(["recent", "oldest"]).default("recent"),
   page: z.coerce.number().int().min(1).max(10000).default(1),
@@ -92,4 +67,3 @@ export function fieldErrors(error: z.ZodError): Record<string, string> {
   );
 }
 export type ReportInput = z.input<typeof reportSchema>;
-export type FeedbackInput = z.input<typeof feedbackSchema>;

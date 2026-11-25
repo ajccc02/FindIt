@@ -1,12 +1,7 @@
 "use server";
 import { z } from "zod";
 import { authenticated } from "@/lib/supabase/server";
-import {
-  feedbackSchema,
-  fieldErrors,
-  filterSchema,
-  reportSchema,
-} from "@/lib/validation";
+import { fieldErrors, filterSchema, reportSchema } from "@/lib/validation";
 import { IMAGE_BUCKET } from "@/lib/constants";
 import { rankMatches } from "@/lib/matching";
 import type {
@@ -256,14 +251,12 @@ export async function saveReport(
     } else {
       if (expectedUpdatedAt)
         throw new Error("This report was deleted. Return to My Reports.");
-      const created = await client
-        .from("reports")
-        .insert({
-          ...fields,
-          user_id: user.id,
-          is_demo: false,
-          status: "active",
-        });
+      const created = await client.from("reports").insert({
+        ...fields,
+        user_id: user.id,
+        is_demo: false,
+        status: "active",
+      });
       if (created.error?.code === "23505") {
         const retry = await client
           .from("reports")
@@ -340,26 +333,6 @@ export async function discardUpload(path: string): Promise<Result<null>> {
       .limit(1);
     dbError(references.error);
     if (!references.data?.length) await cleanImage(client, path);
-    return null;
-  });
-}
-export async function submitFeedback(input: unknown): Promise<Result<null>> {
-  return attempt(async () => {
-    const fields = feedbackSchema.parse(input);
-    const { client } = await authenticated();
-    const { liked, difficulties, improvements, ...ratings } = fields;
-    const comments = [
-      ["What did you like?", liked],
-      ["Difficulties experienced", difficulties],
-      ["Suggested improvements", improvements],
-    ]
-      .filter(([, answer]) => answer)
-      .map(([label, answer]) => `${label}\n${answer}`)
-      .join("\n\n");
-    const result = await client
-      .from("usability_feedback")
-      .insert({ ...ratings, comments: comments || null });
-    if (result.error?.code !== "23505") dbError(result.error);
     return null;
   });
 }

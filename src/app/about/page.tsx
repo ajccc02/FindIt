@@ -1,4 +1,3 @@
-import Link from "next/link";
 import {
   Search,
   PackageCheck,
@@ -6,7 +5,7 @@ import {
   Fingerprint,
   ClipboardCheck,
 } from "lucide-react";
-import { PageHeading, buttonClass } from "@/components/ui";
+import { PageHeading } from "@/components/ui";
 export const metadata = { title: "About & privacy" };
 export default function About() {
   return (
@@ -22,8 +21,9 @@ export default function About() {
         </p>
         <p>
           This is a CS212 Human-Computer Interaction prototype for controlled
-          user testing and a classroom showcase. Campus location suggestions and
-          labeled demonstration reports use generic, fictional examples.
+          user testing and a classroom showcase. Campus locations follow the
+          numbered buildings on the supplied campus map. Item reports labeled
+          “Demo” describe fictional belongings.
         </p>
       </section>
       <section className="section-gap">
@@ -98,30 +98,13 @@ export default function About() {
         <p>
           Photographs are stored in a private bucket and displayed through
           temporary signed links. Authorized project researchers can manage
-          study data and export feedback. Feedback responses are protected from
-          ordinary participant access.
+          prototype data through the project dashboard.
         </p>
         <p>
           If an upload or submission fails, check the error message and retry.
           FindIt preserves form input while you remain on the page. For changes
           in another tab, reload the report before editing it.
         </p>
-      </section>
-      <section className="card about-section">
-        <h2>Help improve the prototype</h2>
-        <p>
-          After completing your researcher&apos;s assigned tasks, submit
-          feedback using the anonymous participant code they provide. Initial
-          User Testing and Classroom Showcase are separate stages.
-        </p>
-        <p>
-          The research team supplies actual findings and evaluation evidence.
-          Demonstration item reports are labeled &ldquo;Demo&rdquo; and can be
-          removed after the study.
-        </p>
-        <Link href="/feedback" className={buttonClass()}>
-          Share usability feedback
-        </Link>
       </section>
     </div>
   );

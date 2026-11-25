@@ -4,18 +4,18 @@
 
 These are engineering changes, not participant findings.
 
-| Date | Technical issue or decision | Change | Verification |
-| --- | --- | --- | --- |
-| 2026-11-24 | Report ownership must survive direct API access | RLS and immutable identity fields | Rollback-only PostgreSQL assertions |
-| 2026-11-24 | Vercel function payload limits differ from the photo allowance | Direct authenticated Storage uploads | Upload checks and browser verification checklist |
-| 2026-11-24 | Optional color must not lower otherwise exact matches | Normalize the available factor weights | Matching unit tests |
-| 2026-11-24 | Feedback must remain private and consent-based | Insert-only participant access, consent and rating constraints | PostgreSQL authorization assertions |
+| Date       | Technical issue or decision                                    | Change                                                         | Verification                                     |
+| ---------- | -------------------------------------------------------------- | -------------------------------------------------------------- | ------------------------------------------------ |
+| 2026-11-24 | Report ownership must survive direct API access                | RLS and immutable identity fields                              | Rollback-only PostgreSQL assertions              |
+| 2026-11-24 | Vercel function payload limits differ from the photo allowance | Direct authenticated Storage uploads                           | Upload checks and browser verification checklist |
+| 2026-11-24 | Optional color must not lower otherwise exact matches          | Normalize the available factor weights                         | Matching unit tests                              |
+| 2026-11-24 | Feedback must remain private and consent-based                 | Insert-only participant access, consent and rating constraints | PostgreSQL authorization assertions              |
 
 ## Actual initial-testing findings
 
 | Date and participant codes | Observed issue | Evidence | Change | Retest outcome |
-| --- | --- | --- | --- | --- |
-| | | | | |
+| -------------------------- | -------------- | -------- | ------ | -------------- |
+|                            |                |          |        |                |
 
 ## Actual showcase evaluation and reflection
 
@@ -24,3 +24,5 @@ These are engineering changes, not participant findings.
 - Task results and questionnaire analysis — [ ]
 - Remaining difficulties and limitations — [ ]
 - Reflection and future improvements — [ ]
+
+| 2026-11-25 | Owner requested removal of in-app Feedback and map-based campus locations | Removed route, navigation, and submission action; added 30 numbered buildings and database validation | See DEVELOPMENT_REPORT.md for completed checks |

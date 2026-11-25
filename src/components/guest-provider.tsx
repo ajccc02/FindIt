@@ -36,7 +36,6 @@ export function GuestProvider({ children }: { children: ReactNode }) {
   const needsGuest =
     pathname === "/" ||
     pathname === "/browse" ||
-    pathname === "/feedback" ||
     pathname.startsWith("/items/") ||
     pathname.startsWith("/my-reports") ||
     pathname === "/report/lost" ||

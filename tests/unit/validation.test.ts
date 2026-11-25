@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { feedbackSchema, filterSchema, reportSchema } from "@/lib/validation";
+import { filterSchema, reportSchema } from "@/lib/validation";
 import { today } from "@/lib/format";
 const report = {
   id: "11111111-1111-4111-8111-111111111111",
@@ -8,27 +8,11 @@ const report = {
   category: "Electronics",
   description: "Black calculator with a protective sliding cover.",
   color: "",
-  location: "University Library",
+  location: "Bldg. 23 — Learning Resource Center",
   incident_date: today(),
   image_path: null,
   additional_info: "",
   turned_over: false,
-};
-const feedback = {
-  id: report.id,
-  participant_code: "QA_ONLY",
-  testing_stage: "Initial",
-  consent_given: true,
-  ease_of_use: 3,
-  navigation: 3,
-  clarity: 3,
-  system_feedback: 3,
-  accessibility: 3,
-  task_completion: 3,
-  overall_satisfaction: 3,
-  liked: "",
-  difficulties: "",
-  improvements: "",
 };
 describe("report validation", () => {
   it("accepts optional empty fields and normalizes them", () => {
@@ -41,6 +25,8 @@ describe("report validation", () => {
       { description: "short" },
       { category: "Unlisted" },
       { location: "" },
+      { location: "Main Building" },
+      { location: "Unlisted Building" },
       { incident_date: "2026-02-31" },
       { incident_date: "2999-01-01" },
       { is_demo: true },
@@ -66,28 +52,5 @@ describe("report validation", () => {
     expect(filterSchema.parse({ q: 'bottle,%"' }).q).toBe('bottle,%"');
     expect(filterSchema.safeParse({ page: 0 }).success).toBe(false);
     expect(filterSchema.safeParse({ q: "x".repeat(101) }).success).toBe(false);
-  });
-});
-describe("feedback validation using in-memory technical fixtures", () => {
-  it("requires consent, participant code, stage, and all seven valid ratings", () => {
-    expect(feedbackSchema.safeParse(feedback).success).toBe(true);
-    for (const change of [
-      { consent_given: false },
-      { participant_code: "a" },
-      { testing_stage: "" },
-      { ease_of_use: 0 },
-      { navigation: 6 },
-      { clarity: 2.5 },
-      { task_completion: undefined },
-    ])
-      expect(feedbackSchema.safeParse({ ...feedback, ...change }).success).toBe(
-        false,
-      );
-  });
-  it("limits optional free-text answers", () => {
-    expect(
-      feedbackSchema.safeParse({ ...feedback, liked: "x".repeat(1001) })
-        .success,
-    ).toBe(false);
   });
 });

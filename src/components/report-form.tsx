@@ -325,23 +325,23 @@ export function ReportForm({
             id="location"
             error={fields.location}
             required
+            hint="Choose a numbered campus building. Add the room, floor, or nearby landmark in Description."
           >
-            <input
+            <select
               id="location"
               name="location"
               required
-              list="campus-locations"
-              maxLength={100}
-              placeholder="Choose or enter a campus location"
-              defaultValue={initial?.location}
+              defaultValue={initial?.location ?? ""}
               {...inputProps("location")}
               disabled={busy}
-            />
-            <datalist id="campus-locations">
+            >
+              <option value="">Choose a campus building</option>
               {LOCATIONS.map((location) => (
-                <option key={location} value={location} />
+                <option key={location} value={location}>
+                  {location}
+                </option>
               ))}
-            </datalist>
+            </select>
           </Field>
           <Field
             label={type === "lost" ? "Date lost" : "Date found"}

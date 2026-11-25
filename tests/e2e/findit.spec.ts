@@ -1,7 +1,6 @@
 import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 const live = process.env.FINDIT_E2E_LIVE === "1";
-
 for (const width of [320, 375, 390, 430, 1280]) {
   test(`public layouts and keyboard navigation at ${width}px`, async ({
     page,
@@ -24,6 +23,7 @@ for (const width of [320, 375, 390, 430, 1280]) {
       .withTags(["wcag2a", "wcag2aa", "wcag21aa"])
       .analyze();
     expect(accessibility.violations).toEqual([]);
+    await expect(page.getByRole("link", { name: /feedback/i })).toHaveCount(0);
     await page.goto("/report");
     await expect(
       page.getByRole("link", { name: "Report Lost Item", exact: true }),
@@ -38,13 +38,16 @@ for (const width of [320, 375, 390, 430, 1280]) {
         () => document.documentElement.scrollWidth <= window.innerWidth,
       ),
     ).toBe(true);
+    await page.goto("/feedback");
+    await expect(
+      page.getByRole("heading", { name: "We couldn't find that page" }),
+    ).toBeVisible();
     await page.goto("/items/not-a-uuid");
     await expect(
       page.getByRole("heading", { name: "We couldn't find that page" }),
     ).toBeVisible();
   });
 }
-
 test("real guest reports, upload recovery, two-session visibility, and management", async ({
   browser,
 }) => {
@@ -77,7 +80,7 @@ test("real guest reports, upload recovery, two-session visibility, and managemen
     await a.getByLabel("Color", { exact: true }).fill("Blue");
     await a
       .getByLabel("Last known location", { exact: false })
-      .fill("Campus Quadrangle");
+      .selectOption("Bldg. 41 — Science Complex");
     await a.getByLabel("Choose an item photograph").setInputFiles({
       name: "wrong.txt",
       mimeType: "text/plain",
@@ -153,11 +156,6 @@ test("real guest reports, upload recovery, two-session visibility, and managemen
       a.getByRole("status").filter({ hasText: "Your report was deleted." }),
     ).toBeVisible();
     id = undefined;
-    await a.goto("/feedback");
-    await a
-      .getByRole("button", { name: "Submit feedback", exact: true })
-      .click();
-    await expect(a.getByRole("alert")).toContainText("highlighted questions");
   } finally {
     if (id) {
       await a.goto("/my-reports");

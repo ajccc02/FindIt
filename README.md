@@ -2,7 +2,7 @@
 
 **Lost something? Let's find it.**
 
-A mobile-first CS212 Human-Computer Interaction prototype for students, faculty, and campus personnel. Reports, photographs, and evaluation responses use Supabase services. The application lives at the root of [ajccc02/FindIt](https://github.com/ajccc02/FindIt).
+A mobile-first CS212 Human-Computer Interaction prototype for students, faculty, and campus personnel. Reports and photographs use Supabase services. The application lives at the root of [ajccc02/FindIt](https://github.com/ajccc02/FindIt).
 
 ## Stack and structure
 
@@ -30,7 +30,7 @@ cd FindIt
 npm ci
 ```
 
-Create a dedicated free Supabase project. In the Supabase SQL Editor, execute both files in `supabase/migrations/` in filename order, once each. The migrations create the two tables, indexes, timestamp triggers, search/statistics/matching candidate functions, database authorization policies, and private `report-images` bucket. For local Supabase with Docker and the Supabase CLI, run `supabase start` and `supabase db reset` inside this directory. Resetting a local database removes its existing data.
+Create a dedicated free Supabase project. In the Supabase SQL Editor, execute all files in `supabase/migrations/` in filename order, once each. The migrations create the two tables, indexes, timestamp triggers, search/statistics/matching candidate functions, database authorization policies, and private `report-images` bucket. For local Supabase with Docker and the Supabase CLI, run `supabase start` and `supabase db reset` inside this directory. Resetting a local database removes its existing data.
 
 In Supabase Authentication, enable anonymous sign-ins. For public testing, create a Cloudflare Turnstile widget for the Vercel production hostname and any approved development hostnames. Enable Turnstile CAPTCHA under Supabase Auth's protection settings and put the widget's **secret** key there. Set the Supabase Site URL to the deployed application's HTTPS URL. Keep Auth rate limits enabled. Many participants sharing one campus Wi-Fi address may reach sign-up rate limits; test the intended classroom setup in advance and stagger first-time guest access if necessary.
 
@@ -58,7 +58,7 @@ npm start
 
 The UI gives setup feedback if configuration is missing. To populate fictional item reports, run `supabase/seed.sql` in the SQL Editor after the migration. Sixteen fixed UUIDs make it safe to rerun. Seeded records display a Demo badge and contribute to database statistics. The seed contains no participant feedback.
 
-Run `tests/database/authorization.sql` in the Supabase SQL Editor to check ownership, shared reads, demo protection, storage paths, consent, rating constraints, and feedback privacy. It rolls back all temporary data. Alternatively:
+Run `tests/database/authorization.sql` in the Supabase SQL Editor to check ownership, shared reads, demo protection, storage paths, campus-building validation, and denial of retired feedback access. It rolls back all temporary data. Alternatively:
 
 ```sh
 # Set FINDIT_TEST_DATABASE_URL securely in your shell to an authorized
@@ -71,11 +71,17 @@ The test database URL is a secret used only by the optional Node test runner. It
 ## Implemented behavior
 
 - Shared lost/found reporting with validated fields and photographs.
+
 - Database-derived home statistics, recent reports, search, filters, and sorting.
+
 - Item details with explainable rule-based Possible Matches.
+
 - Guest-owned editing, deletion, resolution, and reopening under RLS.
-- Anonymous feedback with seven ratings, explicit consent, and optional comments.
+
+- Thirty numbered campus buildings from the supplied map, shared by forms and filters. See `docs/CAMPUS_BUILDINGS.md`.
+
 - Private image storage, expiring signed links, upload progress, client-side image re-encoding, and cleanup after successful replacement/deletion.
+
 - Accessible navigation, labels, error feedback, keyboard-friendly deletion confirmation, and responsive layouts.
 
 The optional color factor is omitted when either report lacks color. Name and location factors use normalized keyword overlap. Date similarity decreases to zero at fourteen days. Up to three opposite-type active reports with at least 40% similarity are shown. Scores support comparison, and ownership is verified by the campus office.
@@ -86,24 +92,30 @@ Guest identity is tied to browser cookies. Clearing browser data or using anothe
 
 Import `ajccc02/FindIt` into Vercel. Use the repository root as **Root Directory**, framework Next.js, and Node.js 24.x. Use `npm ci` and `npm run build`. Add all three public environment variables to the intended deployment environments and redeploy after any value changes. Enable anonymous authentication and configure CAPTCHA against the actual deployment hostname before participant use. The application does not require a local backend server.
 
-The detailed checklist is in `docs/DEPLOYMENT_GUIDE.md`. Verify new guest access, a lost report with a photograph, a second independent guest viewing that report, ownership rejection, report resolution/reopening, and consent-based feedback before calling the deployed application ready for the study. Keep preview deployments protected. Configure the production audience for your approved classroom participants.
+The detailed checklist is in `docs/DEPLOYMENT_GUIDE.md`. Verify new guest access, a lost report with a photograph, a second independent guest viewing that report, ownership rejection, report resolution/reopening, and rejection of retired feedback access before calling the deployed application ready for the study. Keep preview deployments protected. Configure the production audience for your approved classroom participants.
 
 ## Researchers and study data
 
 The documents under `docs/` contain the six UCD sections and blank spaces for actual research, personas, journeys, findings, and reflection. Record initial testing separately from showcase evaluation. Obtain feedback from at least five actual showcase evaluators after direct interaction. Automated checks are technical verification.
 
-Use authorized researcher access in the Supabase dashboard to open `public.usability_feedback` and export the required columns as CSV. Ordinary application users cannot browse this table. Export only to approved researcher storage and restrict access to the project group. `testing_stage` distinguishes Initial and Showcase. `consent_given` records consent. `comments` preserves the three optional answers under their question labels.
+The in-app Feedback section and `/feedback` route have been removed at the project owner’s request. New participant inserts into `public.usability_feedback` are disabled. The historical table and its constraints remain protected to preserve any prior researcher data. Evaluation can be recorded separately using the documentation templates. To export historical responses, use authorized researcher access in the Supabase dashboard to open `public.usability_feedback` and export the required columns as CSV. Ordinary application users cannot browse this table. Export only to approved researcher storage and restrict access to the project group. `testing_stage` distinguishes Initial and Showcase. `consent_given` records consent. `comments` preserves the three optional answers under their question labels.
 
 After exporting and following your group's approved retention decision, remove demonstration rows with `delete from public.reports where is_demo = true;`. Identify development/test reports before deleting them. Remove image objects through Supabase Storage or its API; deleting storage metadata directly does not remove file bytes. Export and then delete study feedback only when the research team has decided to do so. Review unused Auth guest accounts and their reports before removal because report ownership has a cascading foreign key. Review owner-scoped storage folders for abandoned uploads from closed tabs or interrupted requests and remove unreferenced objects through Storage. Ordinary cancellation and replacement cleanup checks report references before removing uploads.
 
 ## Troubleshooting and limitations
 
 - **Guest access fails** — enable anonymous sign-ins, allow browser cookies, check Auth rate limits, and verify CAPTCHA keys and allowed hostnames.
+
 - **Database setup message** — apply the migration to the same project as the configured URL.
+
 - **Upload rejected** — use JPEG/PNG/WebP up to 5 MB and confirm the bucket, MIME allowlist, and Storage policies. Very large pixel dimensions are rejected before canvas processing.
+
 - **Edit conflict** — reload the report when another tab has changed it.
+
 - **A photograph becomes unavailable** — refresh the report to obtain a fresh signed URL. Storage removal errors require researcher cleanup.
+
 - **Counts are unexpected** — statistics include labeled demo records until researchers remove them.
+
 - **Windows sandbox build fails launching a worker** — run the normal build in a terminal that permits Next.js worker processes and local worker connections.
 
 The prototype targets controlled classroom usage. Browser sessions have no cross-device account recovery. Matching uses rules and keywords. There is no private messaging. Abandoned-upload cleanup after a browser closes is a researcher maintenance task. Human evaluation evidence must be supplied by the project group.

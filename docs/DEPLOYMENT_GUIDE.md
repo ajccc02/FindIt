@@ -3,8 +3,8 @@
 ## Supabase
 
 1. Create/select the dedicated FindIt project on the free plan.
-2. Execute both files in `supabase/migrations/` once in filename order in the SQL Editor, or apply them using authenticated Supabase CLI migrations.
-3. Confirm `reports` and `usability_feedback` have RLS enabled. Ordinary authenticated sessions have feedback insertion permission and no feedback read permission.
+2. Execute all files in `supabase/migrations/` once in filename order in the SQL Editor, or apply them using authenticated Supabase CLI migrations.
+3. Confirm `reports` and `usability_feedback` have RLS enabled. Ordinary authenticated sessions have no feedback read or insertion permission; the in-app questionnaire is retired.
 4. Confirm `report-images` is private, limits files to 5 MB, allows JPEG/PNG/WebP, and has the supplied owner/read policies.
 5. Optionally execute `supabase/seed.sql`. Repeating it preserves the fixed demo IDs and creates no duplicate reports.
 6. In Authentication's sign-in/provider settings, enable anonymous sign-ins. In protection settings, configure Cloudflare Turnstile CAPTCHA using its secret key. Keep rate limits enabled.
@@ -26,12 +26,12 @@
 - Refresh the second browser's feed. Find the report and confirm that editing it is unavailable and blocked at the database level.
 - Search, filter, open details, and inspect Possible Matches against actual rows.
 - Edit, resolve, reopen, and delete an owned report using confirmation.
-- During actual voluntary testing, submit feedback and verify its presence through the researcher dashboard. Ordinary guests must be unable to query responses.
+- Verify `/feedback` returns 404 and no navigation or About-page links point to it. Verify every report form and browse filter uses the 30 numbered campus buildings.
 - Check the required mobile widths and keyboard navigation. Record actual deployed verification results.
 
-## Protected feedback export
+## Archived feedback export
 
-An authorized researcher opens the Supabase Table Editor for `public.usability_feedback` and exports the desired columns as CSV. Export Initial and Showcase separately or retain the stage column. Restrict the exported file to the research group. Any analysis or summary must come from actual submitted responses.
+The app no longer collects feedback. To export historical responses, an authorized researcher opens the Supabase Table Editor for `public.usability_feedback` and exports the desired columns as CSV. Export Initial and Showcase separately or retain the stage column. Restrict the exported file to the research group. Any analysis or summary must come from actual submitted responses.
 
 ## Cleanup and retention
 
@@ -39,4 +39,4 @@ Export approved study records before removal. Remove demo rows with `delete from
 
 ## Optional rollback-only authorization check
 
-Execute `tests/database/authorization.sql` with authorized SQL Editor access. It asserts ownership, feedback privacy, rating/consent constraints, and storage path protection. The final rollback leaves both technical Auth identities and feedback fixtures absent from study data. A failed assertion raises an error; roll back the transaction before further SQL work.
+Execute `tests/database/authorization.sql` with authorized SQL Editor access. It asserts ownership, retired feedback access denial, campus-building validation, and storage path protection. The final rollback leaves both technical Auth identities and feedback fixtures absent from study data. A failed assertion raises an error; roll back the transaction before further SQL work.

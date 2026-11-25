@@ -924,15 +924,13 @@ svg {
   max-width: 790px;
   margin: 0 auto;
 }
-.report-form,
-.feedback-form {
+.report-form {
   padding: 30px;
   display: flex;
   flex-direction: column;
   gap: 22px;
 }
-.report-form > h2,
-.feedback-form > h2 {
+.report-form > h2 {
   font-size: 1.125rem;
 }
 .form-section-heading {
@@ -1238,70 +1236,6 @@ svg {
   justify-content: flex-end;
   margin-top: 25px;
 }
-.rating-question {
-  border: 0;
-  padding: 4px 0;
-  min-width: 0;
-}
-.rating-question legend {
-  font-size: 0.95rem;
-  font-weight: 550;
-  margin-bottom: 14px;
-}
-.rating-options {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 12px;
-}
-.rating-options label {
-  min-width: 44px;
-  min-height: 48px;
-  position: relative;
-  cursor: pointer;
-}
-.rating-options input {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  cursor: pointer;
-  z-index: 1;
-}
-.rating-options span {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 48px;
-  border-radius: 9px;
-  border: 1px solid #cbd5e1;
-  color: #475569;
-  background: white;
-}
-.rating-options input:checked + span {
-  color: #1d4ed8;
-  border: 2px solid #2563eb;
-  background: #eff6ff;
-  font-weight: 700;
-}
-.rating-options input:focus-visible + span {
-  outline: 3px solid #2563eb;
-  outline-offset: 3px;
-}
-.rating-endpoints {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.7rem;
-  color: #64748b;
-  margin-top: 7px;
-  gap: 15px;
-}
-.rating-endpoints span:last-child {
-  text-align: right;
-}
-.feedback-success > svg {
-  color: #15803d;
-}
 .about-container {
   max-width: 930px;
   margin: auto;
@@ -1488,7 +1422,7 @@ svg {
     right: 0;
     z-index: 40;
     display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     padding: 7px 7px max(8px, env(safe-area-inset-bottom));
     border-top: 1px solid var(--line);
     background: #fffffff5;
@@ -1643,8 +1577,7 @@ svg {
     width: 150px;
     min-height: 125px;
   }
-  .report-form,
-  .feedback-form {
+  .report-form {
     padding: 24px;
     gap: 21px;
   }
@@ -1807,8 +1740,7 @@ svg {
   .choice-icon {
     padding: 13px;
   }
-  .report-form,
-  .feedback-form {
+  .report-form {
     padding: 21px 17px;
   }
   .two-column {
@@ -1856,15 +1788,6 @@ svg {
   }
   .match-card .report-image {
     aspect-ratio: 2.2;
-  }
-  .rating-options {
-    gap: 7px;
-  }
-  .rating-endpoints {
-    font-size: 0.66rem;
-  }
-  .rating-question legend {
-    font-size: 0.875rem;
   }
   .guest-panel {
     padding: 24px 20px;

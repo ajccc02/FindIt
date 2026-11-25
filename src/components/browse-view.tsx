@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Search, SlidersHorizontal, SearchX, RefreshCw } from "lucide-react";
 import { getFeed } from "@/app/actions";
-import { CATEGORIES } from "@/lib/constants";
+import { CATEGORIES, LOCATIONS } from "@/lib/constants";
 import { filterSchema } from "@/lib/validation";
 import { GuestGate } from "./guest-provider";
 import { useResource } from "./use-resource";
@@ -115,12 +115,7 @@ function BrowseContent() {
               value: filters.location,
               options: [
                 ["", "All locations"],
-                ...[
-                  ...new Set([
-                    ...(data?.locations ?? []),
-                    ...(filters.location ? [filters.location] : []),
-                  ]),
-                ].map((value) => [value, value]),
+                ...LOCATIONS.map((value) => [value, value]),
               ],
             },
             {

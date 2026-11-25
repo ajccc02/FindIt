@@ -6,7 +6,6 @@ import {
   Search,
   Plus,
   ClipboardList,
-  MessageSquare,
   MapPin,
   Info,
   ShieldCheck,
@@ -18,7 +17,6 @@ const navigation = [
   { href: "/browse", label: "Browse", icon: Search },
   { href: "/report", label: "Report", icon: Plus },
   { href: "/my-reports", label: "My Reports", icon: ClipboardList },
-  { href: "/feedback", label: "Feedback", icon: MessageSquare },
 ];
 export function AppShell({ children }: { children: ReactNode }) {
   const path = usePathname();
